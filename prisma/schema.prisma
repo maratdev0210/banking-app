@@ -1,0 +1,102 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/app/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id          Int              @id @default(autoincrement())
+  clientType  ClientType
+  physical    PhysicalClient?  @relation("PhysicalClientRelation")
+  legal       LegalClient?     @relation("LegalClientRelation")
+  accounts    Account[]        @relation("ClientAccounts")
+  createdAt   DateTime          @default(now())
+}
+
+model PhysicalClient {
+  id            Int    @id
+  client        Client @relation("PhysicalClientRelation", fields: [id], references: [id])
+  
+  lastName      String
+  firstName     String
+  middleName    String
+  birthDate     DateTime
+  address       String
+  phone         String
+  gender        Gender
+  isDebtor      Boolean
+  photoUrl      String?
+  isEmployee    Boolean
+}
+
+model LegalClient {
+  id               Int    @id
+  client           Client @relation("LegalClientRelation", fields: [id], references: [id])
+
+  companyName      String
+  address          String
+  ceoName          String
+  accountantName   String
+  phone            String
+  ownershipForm    OwnershipForm
+}
+
+model Account {
+  id             Int          @id @default(autoincrement())
+  accountNumber  String       @unique
+  openedAt       DateTime     @default(now())
+  balance        Float        @default(0)
+  clientId       Int
+  accountType    AccountType
+  checkAccount   CheckAccount?
+  savingAccount  SavingAccount?
+  client         Client       @relation("ClientAccounts", fields: [clientId], references: [id])
+}
+
+model CheckAccount {
+  id          Int       @id
+  account     Account   @relation(fields: [id], references: [id])
+  accountType CheckType
+}
+
+model SavingAccount {
+  id          Int       @id
+  account     Account   @relation(fields: [id], references: [id])
+}
+
+enum ClientType {
+  PHYSICAL
+  LEGAL
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum OwnershipForm {
+  GOVERNMENT
+  PRIVATE
+  FOREIGN
+  MIXED
+}
+
+enum AccountType {
+  CHECK
+  SAVINGS
+}
+
+enum CheckType {
+  CREDIT
+  DEBIT
+}
