@@ -1,9 +1,9 @@
-import MainInfo from "@/widgets/auth/signup/physical/MainInfo";
+import Physical from "@/widgets/auth/signup/physical/Physical";
 
 export default function Page() {
   return (
     <>
-      <MainInfo />
+      <Physical />
     </>
   );
 }

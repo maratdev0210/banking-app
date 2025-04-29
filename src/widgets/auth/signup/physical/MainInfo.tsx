@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { MAIN_INFO } from "@/types/auth/physical";
+import React from "react";
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "Введите Ваше имя!" }).max(50),
@@ -28,7 +29,11 @@ const formSchema = z.object({
   phone: phoneNumberSchema,
 });
 
-export default function MainInfo() {
+interface INextStep {
+  setNext: React.Dispatch<React.SetStateAction<number>>;
+}
+
+export default function MainInfo({ setNext }: INextStep) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,34 +45,46 @@ export default function MainInfo() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    console.log(values);
+    setNext(2); // go to the next step of a form
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        {MAIN_INFO.map((inputField) => {
-          return Object.keys(inputField).map((fieldName, index) => {
-            return (
-              <FormField
-                key={index}
-                control={form.control}
-                name={fieldName}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{inputField[fieldName]}</FormLabel>
-                    <FormControl>
-                      <Input placeholder={inputField[fieldName]} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              ></FormField>
-            );
-          });
-        })}
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
+    <>
+      <div>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 h-100 w-full sm:w-1/2 md:w-100"
+          >
+            {MAIN_INFO.map((inputField) => {
+              return Object.keys(inputField).map((fieldName, index) => {
+                return (
+                  <FormField
+                    key={index}
+                    control={form.control}
+                    name={fieldName}
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{inputField[fieldName]}</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={inputField[fieldName]}
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  ></FormField>
+                );
+              });
+            })}
+            <div className="w-full flex justify-end">
+              <Button className="cursor-pointer" type="submit">Далее</Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </>
   );
 }
