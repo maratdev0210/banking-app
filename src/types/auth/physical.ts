@@ -18,3 +18,19 @@ export const MAIN_INFO: IMainInfo[] = [
     phone: "Номер телефона",
   },
 ];
+
+type IAdditionalInfo = {
+  [name: string]: string;
+};
+
+export const ADDITIONAL_INFO: IAdditionalInfo[] = [
+  {
+    birthDate: "Дата рождения",
+  },
+  {
+    address: "Адрес проживания",
+  },
+  {
+    gender: "Пол",
+  },
+];
