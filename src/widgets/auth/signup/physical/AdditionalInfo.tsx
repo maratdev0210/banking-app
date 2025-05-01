@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -25,41 +26,51 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import React from "react";
-import { cn } from "@/lib/utils";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface INextStep {
   setNext: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const formSchema2 = z.object({
-  //   birthDate: z.date({ required_error: "Укажите Вашу дату рождения!" }),
+const formSchema = z.object({
+  birthDate: z.date({ required_error: "Укажите Вашу дату рождения!" }),
   address: z.string().min(2, { message: "Укажите Ваш адрес" }),
   gender: z.string().regex(/(?:Мужской|Женский)/, { message: "Выберите пол!" }),
   isDebtor: z.boolean(),
+  isEmployee: z.boolean(),
 });
 
 export default function AdditionalInfo({ setNext }: INextStep) {
-  const form = useForm<z.infer<typeof formSchema2>>({
-    resolver: zodResolver(formSchema2),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      //   birthDate: new Date(),
+      birthDate: new Date(),
       address: "",
       gender: "",
       isDebtor: false,
+      isEmployee: false,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema2>) => {
-    setNext(2);
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    setNext(3);
     console.log(values);
   };
 
   return (
     <>
-      <div>
+      <div className="border-1 border-gray-200 px-4 py-4 rounded-xl shadow-xl">
+        <h2 className="text-center font-semibold text-xl pb-8">Дополнительная информация</h2>
         <Form {...form}>
           <form
-            className="space-y-4 h-100 w-full sm:w-1/2 md:w-100"
+            className="space-y-4 h-auto w-full sm:w-1/2 md:w-100 flex flex-col justify-between"
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <FormField
@@ -78,46 +89,109 @@ export default function AdditionalInfo({ setNext }: INextStep) {
                 </FormItem>
               )}
             />
-            {/* <FormField
-              control={form.control}
-              name="birthDate"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Date of birth</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
+            <div className="flex gap-4 justify-between">
+              <FormField
+                control={form.control}
+                name="birthDate"
+                render={({ field }) => (
+                  <FormItem className="flex flex-1/2 flex-col">
+                    <FormLabel>Дата рождения</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button variant={"outline"}>
+                            {field.value ? (
+                              format(field.value, "PPP")
+                            ) : (
+                              <span>Выберите дату</span>
+                            )}
+                            <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className="p-0" align="start">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={field.onChange}
+                          disabled={(date) =>
+                            date > new Date() || date < new Date("1900-01-01")
+                          }
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="gender"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Пол</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Укажите ваш пол" />
+                        </SelectTrigger>
                       </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-full p-0" align="start">
-                      <Calendar
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        onDayClick={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
+                      <SelectContent>
+                        <SelectItem value="Мужской">Мужской</SelectItem>
+                        <SelectItem value="Женский">Женский</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <FormField
+              control={form.control}
+              name="isDebtor"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Я не являюсь должником банка</FormLabel>
+                    <FormDescription>
+                      Если вы являетсь должником банка, сообщите об этом
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
-            /> */}
+            />
+            <FormField
+              control={form.control}
+              name="isEmployee"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Я не являюсь сотрудником банка</FormLabel>
+                    <FormDescription>
+                      Если вы являетсь сотрудником банка, укажите это
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
 
             <div className="w-full flex justify-end">
               <Button className="cursor-pointer" type="submit">

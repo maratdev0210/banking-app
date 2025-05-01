@@ -50,11 +50,12 @@ export default function MainInfo({ setNext }: INextStep) {
 
   return (
     <>
-      <div>
+      <div className="border-1 border-gray-200 px-4 py-4 rounded-xl shadow-xl">
+        <h2 className="text-center text-lg font-semibold pb-4">Основная информация</h2>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 h-100 w-full sm:w-1/2 md:w-100"
+            className="space-y-4 h-auto flex flex-col justify-between w-full sm:w-1/2 md:w-100"
           >
             {MAIN_INFO.map((inputField) => {
               return Object.keys(inputField).map((fieldName, index) => {
@@ -80,7 +81,9 @@ export default function MainInfo({ setNext }: INextStep) {
               });
             })}
             <div className="w-full flex justify-end">
-              <Button className="cursor-pointer" type="submit">Далее</Button>
+              <Button className="cursor-pointer" type="submit">
+                Далее
+              </Button>
             </div>
           </form>
         </Form>

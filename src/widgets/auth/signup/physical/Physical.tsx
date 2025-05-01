@@ -5,16 +5,18 @@
 import { useState } from "react";
 import MainInfo from "./MainInfo";
 import AdditionalInfo from "./AdditionalInfo";
+import PhotoUpload from "./PhotoUpload";
 
 export default function Physical() {
   const [next, setNext] = useState(1); // shows the current step of a registration
 
   return (
     <>
-      <div className="relative">
-        <div className="absolute top-100 left-1/2 -translate-y-1/2 -translate-x-1/2">
+      <div className="relative flex justify-center items-center h-lvh">
+        <div className="w-110">
           {next == 1 && <MainInfo setNext={setNext} />}
           {next == 2 && <AdditionalInfo setNext={setNext} />}
+          {next == 3 && <PhotoUpload />}
         </div>
       </div>
     </>
