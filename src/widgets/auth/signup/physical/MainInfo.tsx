@@ -19,7 +19,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { MAIN_INFO } from "@/types/auth/physical";
+import { IMainInfoData, MAIN_INFO } from "@/types/auth/physical";
 import React from "react";
 
 const formSchema = z.object({
@@ -31,9 +31,12 @@ const formSchema = z.object({
 
 interface INextStep {
   setNext: React.Dispatch<React.SetStateAction<number>>;
+  setMainInfoData: React.Dispatch<
+    React.SetStateAction<IMainInfoData | undefined>
+  >;
 }
 
-export default function MainInfo({ setNext }: INextStep) {
+export default function MainInfo({ setNext, setMainInfoData }: INextStep) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -46,12 +49,15 @@ export default function MainInfo({ setNext }: INextStep) {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setNext(2); // go to the next step of a form
+    setMainInfoData(values);
   };
 
   return (
     <>
       <div className="border-1 border-gray-200 px-4 py-4 rounded-xl shadow-xl">
-        <h2 className="text-center text-lg font-semibold pb-4">Основная информация</h2>
+        <h2 className="text-center text-lg font-semibold pb-4">
+          Основная информация
+        </h2>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}

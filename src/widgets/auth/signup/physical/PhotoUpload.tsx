@@ -17,14 +17,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import React from "react";
 
-export default function PhotoUpload() {
+interface IPhotoUpload {
+  setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export default function PhotoUpload({ setIsRegistered }: IPhotoUpload) {
   const form = useForm<z.infer<typeof imageSchema>>({
     resolver: zodResolver(imageSchema),
   });
 
   const onSubmit = (data: z.infer<typeof imageSchema>) => {
     console.log(data);
+    setIsRegistered(true); // creates the new record for the user in a database
   };
 
   return (

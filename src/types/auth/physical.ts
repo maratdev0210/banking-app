@@ -34,3 +34,22 @@ export const ADDITIONAL_INFO: IAdditionalInfo[] = [
     gender: "Пол",
   },
 ];
+
+// Interfaces for storing the form data on user submit
+// The data is later used for adding the user record
+// to a database
+
+export interface IMainInfoData {
+  firstName: string;
+  lastName: string;
+  middleName: string;
+  phone: string;
+}
+
+export interface IAdditionalInfoData {
+  birthDate: Date;
+  address: string;
+  gender: string;
+  isDebtor: boolean;
+  isEmployee: boolean;
+}

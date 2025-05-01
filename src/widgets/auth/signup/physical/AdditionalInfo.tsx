@@ -34,9 +34,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
+import { IAdditionalInfoData } from "@/types/auth/physical";
 
 interface INextStep {
   setNext: React.Dispatch<React.SetStateAction<number>>;
+  setAdditionalInfoData: React.Dispatch<
+    React.SetStateAction<IAdditionalInfoData | undefined>
+  >;
 }
 
 const formSchema = z.object({
@@ -47,7 +51,10 @@ const formSchema = z.object({
   isEmployee: z.boolean(),
 });
 
-export default function AdditionalInfo({ setNext }: INextStep) {
+export default function AdditionalInfo({
+  setNext,
+  setAdditionalInfoData,
+}: INextStep) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -61,13 +68,15 @@ export default function AdditionalInfo({ setNext }: INextStep) {
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setNext(3);
-    console.log(values);
+    setAdditionalInfoData(values);
   };
 
   return (
     <>
       <div className="border-1 border-gray-200 px-4 py-4 rounded-xl shadow-xl">
-        <h2 className="text-center font-semibold text-xl pb-8">Дополнительная информация</h2>
+        <h2 className="text-center font-semibold text-xl pb-8">
+          Дополнительная информация
+        </h2>
         <Form {...form}>
           <form
             className="space-y-4 h-auto w-full sm:w-1/2 md:w-100 flex flex-col justify-between"

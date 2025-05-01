@@ -26,7 +26,6 @@ model Client {
 model PhysicalClient {
   id            Int    @id
   client        Client @relation("PhysicalClientRelation", fields: [id], references: [id])
-  
   lastName      String
   firstName     String
   middleName    String
