@@ -21,15 +21,16 @@ import React from "react";
 
 interface IPhotoUpload {
   setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;
+  setImageFile: React.Dispatch<React.SetStateAction<File | undefined>>;
 }
 
-export default function PhotoUpload({ setIsRegistered }: IPhotoUpload) {
+export default function PhotoUpload({ setIsRegistered, setImageFile }: IPhotoUpload) {
   const form = useForm<z.infer<typeof imageSchema>>({
     resolver: zodResolver(imageSchema),
   });
 
   const onSubmit = (data: z.infer<typeof imageSchema>) => {
-    console.log(data);
+    setImageFile(data.image);
     setIsRegistered(true); // creates the new record for the user in a database
   };
 

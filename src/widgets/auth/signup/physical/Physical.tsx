@@ -7,6 +7,7 @@ import MainInfo from "./MainInfo";
 import AdditionalInfo from "./AdditionalInfo";
 import PhotoUpload from "./PhotoUpload";
 import { IMainInfoData, IAdditionalInfoData } from "@/types/auth/physical";
+import createUser from "@/lib/signup";
 
 export default function Physical() {
   const [next, setNext] = useState(1); // shows the current step of a registration
@@ -14,15 +15,22 @@ export default function Physical() {
   const [additionalInfoData, setAdditionalInfoData] = useState<
     IAdditionalInfoData | undefined
   >();
+  const [imageFile, setImageFile] = useState<File | undefined>();
   const [isRegistered, setIsRegistered] = useState<boolean>(false); // when the user is registered create a new record in a database
 
   useEffect(() => {
+    const createNewUser = async () => {
+      const result = await createUser(
+        mainInfoData,
+        additionalInfoData,
+      );
+      console.log(result);
+    };
     if (isRegistered) {
-      // TO-DO: create the user record in a database
-      console.log(mainInfoData);
-      console.log(additionalInfoData);
+      createNewUser();
     }
   }, [isRegistered]);
+
 
   return (
     <>
@@ -37,7 +45,12 @@ export default function Physical() {
               setAdditionalInfoData={setAdditionalInfoData}
             />
           )}
-          {next == 3 && <PhotoUpload setIsRegistered={setIsRegistered} />}
+          {next == 3 && (
+            <PhotoUpload
+              setImageFile={setImageFile}
+              setIsRegistered={setIsRegistered}
+            />
+          )}
         </div>
       </div>
     </>
