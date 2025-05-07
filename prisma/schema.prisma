@@ -41,7 +41,6 @@ model PhysicalClient {
 model LegalClient {
   id               Int    @id
   client           Client @relation("LegalClientRelation", fields: [id], references: [id])
-
   companyName      String
   address          String
   ceoName          String
