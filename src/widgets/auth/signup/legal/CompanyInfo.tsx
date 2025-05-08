@@ -131,7 +131,7 @@ export default function CompanyInfo({
               )}
             />
 
-            <div className="w-full flex justify-center">
+            <div className="w-full flex justify-end">
               <Button className="cursor-pointer" type="submit">
                 Далее
               </Button>
