@@ -2,8 +2,9 @@
 
 import { ICompanyInfoData, IManagementInfoData } from "@/types/auth/legal";
 import CompanyInfo from "./CompanyInfo";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ManagementInfo from "./ManagementInfo";
+import { createLegalUser } from "@/lib/signup";
 
 export default function Legal() {
   const [next, setNext] = useState<number>(1);
@@ -13,6 +14,18 @@ export default function Legal() {
   const [managementInfoData, setManagementInfoData] = useState<
     IManagementInfoData | undefined
   >(undefined);
+  const [isRegistered, setIsRegistered] = useState(false); // check if the user has submiited the form for signup
+
+  useEffect(() => {
+    const createNewUser = async () => {
+      const result = await createLegalUser(companyInfoData, managementInfoData);
+      console.log(result);
+    };
+    if (isRegistered) {
+      createNewUser();
+    }
+  }, [isRegistered]);
+
   return (
     <>
       <div className="relative flex justify-center items-center h-lvh">
@@ -27,6 +40,7 @@ export default function Legal() {
             <ManagementInfo
               setNext={setNext}
               setManagementInfoData={setManagementInfoData}
+              setIsRegistered={setIsRegistered}
             />
           )}
         </div>

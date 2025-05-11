@@ -1,12 +1,10 @@
-// photo upload api route
-
 "use server";
 
-import { add } from "date-fns";
 import prisma from "./prisma";
 import { IMainInfoData, IAdditionalInfoData } from "@/types/auth/physical";
+import { ICompanyInfoData, IManagementInfoData } from "@/types/auth/legal";
 
-export default async function createUser(
+export async function createUser(
   mainInfoData: IMainInfoData,
   additionalInfoData: IAdditionalInfoData
 ) {
@@ -35,6 +33,57 @@ export default async function createUser(
           gender: gender,
           isDebtor: additionalInfoData.isDebtor,
           isEmployee: additionalInfoData.isEmployee,
+        },
+      });
+    });
+    return client;
+  } catch (error) {
+    console.log(`Error creating client: `, error);
+  }
+}
+
+export async function createLegalUser(
+  companyInfoData: ICompanyInfoData,
+  managementInfoData: IManagementInfoData
+) {
+  let ownershipForm = "MIXED";
+  if (companyInfoData?.ownershipForm == "Государственная") {
+    ownershipForm = "GOVERNMENT";
+  } else if (companyInfoData?.ownershipForm == "Частная") {
+    ownershipForm = "PRIVATE";
+  } else if (companyInfoData?.ownershipForm == "Иностранная") {
+    ownershipForm = "FOREIGN";
+  }
+
+  const ceoName =
+    managementInfoData.firstNameCeo +
+    " " +
+    managementInfoData.lastNameCeo +
+    " " +
+    managementInfoData.middleNameCeo;
+  const accountantName =
+    managementInfoData.firstNameAccountant +
+    " " +
+    managementInfoData.lastNameAccountant +
+    " " +
+    managementInfoData.middleNameAccountant;
+
+  try {
+    const client = await prisma.$transaction(async (tx) => {
+      const client = await tx.client.create({
+        data: {
+          clientType: "LEGAL",
+        },
+      });
+      await tx.legalClient.create({
+        data: {
+          id: client.id,
+          ownershipForm: ownershipForm,
+          companyName: companyInfoData?.companyName,
+          address: companyInfoData?.address,
+          phone: managementInfoData.phone,
+          ceoName: ceoName,
+          accountantName: accountantName,
         },
       });
     });

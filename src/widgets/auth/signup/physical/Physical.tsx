@@ -7,7 +7,7 @@ import MainInfo from "./MainInfo";
 import AdditionalInfo from "./AdditionalInfo";
 import PhotoUpload from "./PhotoUpload";
 import { IMainInfoData, IAdditionalInfoData } from "@/types/auth/physical";
-import createUser from "@/lib/signup";
+import { createUser } from "@/lib/signup";
 
 export default function Physical() {
   const [next, setNext] = useState(1); // shows the current step of a registration
@@ -20,17 +20,13 @@ export default function Physical() {
 
   useEffect(() => {
     const createNewUser = async () => {
-      const result = await createUser(
-        mainInfoData,
-        additionalInfoData,
-      );
+      const result = await createUser(mainInfoData, additionalInfoData);
       console.log(result);
     };
     if (isRegistered) {
       createNewUser();
     }
   }, [isRegistered]);
-
 
   return (
     <>

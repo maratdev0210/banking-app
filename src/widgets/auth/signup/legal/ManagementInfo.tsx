@@ -58,11 +58,13 @@ interface INextStep {
   setManagementInfoData: React.Dispatch<
     React.SetStateAction<IManagementInfoData | undefined>
   >;
+  setIsRegistered: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function ManagementInfo({
   setNext,
   setManagementInfoData,
+  setIsRegistered,
 }: INextStep) {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -80,6 +82,7 @@ export default function ManagementInfo({
   const onSubmit = (values: z.infer<typeof formSchema>) => {
     setNext(2);
     setManagementInfoData(values);
+    setIsRegistered(true);
   };
 
   return (
