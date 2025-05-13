@@ -4,6 +4,8 @@ import prisma from "./prisma";
 import bcrypt from "bcrypt";
 import { IMainInfoData, IAdditionalInfoData } from "@/types/auth/physical";
 import { ICompanyInfoData, IManagementInfoData } from "@/types/auth/legal";
+import { createSession, deleteSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
 export async function createUser(
   mainInfoData: IMainInfoData,
@@ -38,6 +40,7 @@ export async function createUser(
           password: hashedPassword,
         },
       });
+      await createSession(client.id);
     });
     return client;
   } catch (error) {
@@ -92,6 +95,7 @@ export async function createLegalUser(
           password: hashedPassword,
         },
       });
+      await createSession(client.id);
     });
     return client;
   } catch (error) {
