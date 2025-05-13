@@ -36,6 +36,7 @@ model PhysicalClient {
   isDebtor      Boolean
   photoUrl      String?
   isEmployee    Boolean
+  password String
 }
 
 model LegalClient {
@@ -47,6 +48,7 @@ model LegalClient {
   accountantName   String
   phone            String
   ownershipForm    OwnershipForm
+  password String
 }
 
 model Account {

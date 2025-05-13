@@ -1,6 +1,7 @@
 "use server";
 
 import prisma from "./prisma";
+import bcrypt from "bcrypt";
 import { IMainInfoData, IAdditionalInfoData } from "@/types/auth/physical";
 import { ICompanyInfoData, IManagementInfoData } from "@/types/auth/legal";
 
@@ -14,6 +15,7 @@ export async function createUser(
   } else {
     gender = "FEMALE";
   }
+  const hashedPassword = await bcrypt.hash(mainInfoData.password, 10);
   try {
     const client = await prisma.$transaction(async (tx) => {
       const client = await tx.client.create({
@@ -33,6 +35,7 @@ export async function createUser(
           gender: gender,
           isDebtor: additionalInfoData.isDebtor,
           isEmployee: additionalInfoData.isEmployee,
+          password: hashedPassword,
         },
       });
     });
@@ -54,6 +57,8 @@ export async function createLegalUser(
   } else if (companyInfoData?.ownershipForm == "Иностранная") {
     ownershipForm = "FOREIGN";
   }
+
+  const hashedPassword = await bcrypt.hash(managementInfoData.password, 10);
 
   const ceoName =
     managementInfoData.firstNameCeo +
@@ -84,6 +89,7 @@ export async function createLegalUser(
           phone: managementInfoData.phone,
           ceoName: ceoName,
           accountantName: accountantName,
+          password: hashedPassword,
         },
       });
     });

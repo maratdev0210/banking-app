@@ -51,6 +51,14 @@ const formSchema = z.object({
     .min(2, { message: "Введите отчество бухгалтера!" })
     .max(50),
   phone: phoneNumberSchema,
+  password: z
+    .string()
+    .min(8, {
+      message: "Пароль должен содержать минимум 8 символов",
+    })
+    .refine((pwd) => /\d/.test(pwd), {
+      message: "Пароль должен содержать хотя бы одну цифру",
+    }),
 });
 
 interface INextStep {
@@ -76,6 +84,7 @@ export default function ManagementInfo({
       lastNameAccountant: "",
       middleNameAccountant: "",
       phone: "+7",
+      password: "",
     },
   });
 
@@ -89,7 +98,7 @@ export default function ManagementInfo({
     <>
       <div className="border-1 border-gray-200 px-4 py-4 rounded-xl shadow-xl">
         <h2 className="text-center text-lg font-semibold pb-4">
-          Информация о владецльцах компании
+          Информация о владельцах компании
         </h2>
         <Form {...form}>
           <form
@@ -119,6 +128,19 @@ export default function ManagementInfo({
                 );
               });
             })}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Придумайте пароль</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Пароль" {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            ></FormField>
             <div className="w-full flex justify-end">
               <Button className="cursor-pointer" type="submit">
                 Отправить

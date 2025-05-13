@@ -44,6 +44,7 @@ export interface IMainInfoData {
   lastName: string;
   middleName: string;
   phone: string;
+  password: string;
 }
 
 export interface IAdditionalInfoData {

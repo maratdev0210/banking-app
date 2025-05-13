@@ -27,6 +27,14 @@ const formSchema = z.object({
   lastName: z.string().min(2, { message: "Введите Вашу фамилию" }).max(50),
   middleName: z.string().min(2, { message: "Введите Ваше отчество" }).max(50), // father name to be precise
   phone: phoneNumberSchema,
+  password: z
+    .string()
+    .min(8, {
+      message: "Пароль должен содержать минимум 8 символов",
+    })
+    .refine((pwd) => /\d/.test(pwd), {
+      message: "Пароль должен содержать хотя бы одну цифру",
+    }),
 });
 
 interface INextStep {
@@ -44,6 +52,7 @@ export default function MainInfo({ setNext, setMainInfoData }: INextStep) {
       lastName: "",
       middleName: "",
       phone: "+7",
+      password: "",
     },
   });
 
@@ -86,6 +95,19 @@ export default function MainInfo({ setNext, setMainInfoData }: INextStep) {
                 );
               });
             })}
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Придумайте пароль</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Пароль" {...field} type="password" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            ></FormField>
             <div className="w-full flex justify-end">
               <Button className="cursor-pointer" type="submit">
                 Далее

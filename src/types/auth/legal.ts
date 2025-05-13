@@ -35,6 +35,7 @@ export interface IManagementInfoData {
   lastNameAccountant: string;
   middleNameAccountant: string;
   phone: string;
+  password: string;
 }
 
 // text input fields for management info fields
