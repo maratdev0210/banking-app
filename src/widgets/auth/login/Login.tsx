@@ -40,7 +40,7 @@ export default function Login() {
       }),
     clientType: z
       .string()
-      .regex(/(?:Физическое|Юридическое)/, { message: "Укажите вид лица!" }),
+      .regex(/(?:PHYSICAL|LEGAL)/, { message: "Укажите вид лица!" }),
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -112,12 +112,14 @@ export default function Login() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {CLIENT_TYPE.map((value, index) => {
-                        return (
-                          <SelectItem key={index} value={value}>
-                            {value}
-                          </SelectItem>
-                        );
+                      {CLIENT_TYPE.map((type, index) => {
+                        return Object.entries(type).map((value, index) => {
+                          return (
+                            <SelectItem key={index} value={value[0]}>
+                              {value[1]}
+                            </SelectItem>
+                          );
+                        });
                       })}
                     </SelectContent>
                   </Select>
