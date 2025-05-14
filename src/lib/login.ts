@@ -1,3 +1,5 @@
+"use server";
+
 import prisma from "./prisma";
 import { createSession } from "./session";
 import bcrypt from "bcrypt";
