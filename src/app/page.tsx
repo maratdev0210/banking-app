@@ -1,13 +1,10 @@
-// app/page.tsx
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-background">
-      {/* Hero Section */}
       <section className="w-full py-20 md:py-32 lg:py-40 border-b">
         <div className="container px-4 md:px-6">
           <div className="flex flex-col items-center space-y-10 text-center">
