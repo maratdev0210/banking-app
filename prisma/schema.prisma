@@ -1,9 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
+// schema.prisma
 generator client {
   provider = "prisma-client-js"
   output   = "../src/app/generated/prisma"
@@ -20,7 +15,7 @@ model Client {
   physical    PhysicalClient?  @relation("PhysicalClientRelation")
   legal       LegalClient?     @relation("LegalClientRelation")
   accounts    Account[]        @relation("ClientAccounts")
-  createdAt   DateTime          @default(now())
+  createdAt   DateTime         @default(now())
 }
 
 model PhysicalClient {
@@ -36,7 +31,7 @@ model PhysicalClient {
   isDebtor      Boolean
   photoUrl      String?
   isEmployee    Boolean
-  password String
+  password      String
 }
 
 model LegalClient {
@@ -48,19 +43,21 @@ model LegalClient {
   accountantName   String
   phone            String
   ownershipForm    OwnershipForm
-  password String
+  password         String
 }
 
 model Account {
-  id             Int          @id @default(autoincrement())
-  accountNumber  String       @unique
-  openedAt       DateTime     @default(now())
-  balance        Float        @default(0)
+  id             Int                  @id @default(autoincrement())
+  accountNumber  String               @unique
+  openedAt       DateTime             @default(now())
+  balance        Float                @default(0)
   clientId       Int
   accountType    AccountType
   checkAccount   CheckAccount?
   savingAccount  SavingAccount?
-  client         Client       @relation("ClientAccounts", fields: [clientId], references: [id])
+  client         Client               @relation("ClientAccounts", fields: [clientId], references: [id])
+  sourceTransactions Transaction[]    @relation("TransactionSourceAccount")
+  targetTransactions Transaction[]    @relation("TransactionTargetAccount")
 }
 
 model CheckAccount {
@@ -72,6 +69,54 @@ model CheckAccount {
 model SavingAccount {
   id          Int       @id
   account     Account   @relation(fields: [id], references: [id])
+}
+
+model Cashier {
+  id            Int          @id @default(autoincrement())
+  fullName      String
+  login         String       @unique
+  passwordHash  String
+  isActive      Boolean      @default(true)
+  lastLogin     DateTime?
+  sessions      Session[]
+  createdAt     DateTime     @default(now())
+  transactions  Transaction[] @relation("TransactionCashier")
+}
+
+model Session {
+  id            Int          @id @default(autoincrement())
+  cashierId     Int
+  cashier       Cashier      @relation(fields: [cashierId], references: [id])
+  startTime     DateTime     @default(now())
+  endTime       DateTime?
+  deposits      Float        @default(0)
+  withdrawals   Float        @default(0)
+  transfers     Float        @default(0)
+  transactions  Transaction[] @relation("SessionTransactions")
+  
+  @@index([cashierId])
+}
+
+model Transaction {
+  id                Int          @id @default(autoincrement())
+  type              TransactionType
+  amount            Float
+  fee               Float        @default(0)
+  timestamp         DateTime     @default(now())
+  cashierId         Int
+  cashier           Cashier      @relation("TransactionCashier", fields: [cashierId], references: [id])
+  sessionId         Int          
+  session           Session      @relation("SessionTransactions", fields: [sessionId], references: [id])
+  sourceAccountId   Int?
+  sourceAccount     Account?     @relation("TransactionSourceAccount", fields: [sourceAccountId], references: [id])
+  targetAccountId   Int?
+  targetAccount     Account?     @relation("TransactionTargetAccount", fields: [targetAccountId], references: [id])
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
 }
 
 enum ClientType {
