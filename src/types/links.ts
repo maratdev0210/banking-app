@@ -14,6 +14,7 @@ export const NAVIGATION_PUBLIC: INavigationPublic = {
   Войти: "/auth/login",
   "Физическим лицам": "/auth/signup/physical",
   "Юридическим лицам": "/auth/signup/legal",
+  Сотрудникам: "employee/signup",
   Главная: "/",
 };
 
