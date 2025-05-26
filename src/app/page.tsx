@@ -1,103 +1,346 @@
-import Image from "next/image";
+// app/page.tsx
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <main className="min-h-screen bg-background">
+      {/* Hero Section */}
+      <section className="w-full py-20 md:py-32 lg:py-40 border-b">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col items-center space-y-10 text-center">
+            <div className="space-y-4">
+              <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl">
+                Система управления банковскими счетами
+              </h1>
+              <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+                Современное решение для эффективного управления банковскими
+                счетами физических и юридических лиц
+              </p>
+            </div>
+            <div className="flex flex-col gap-4 min-[400px]:flex-row">
+              <Button size="lg" className="px-8">
+                <Link href="auth/login">Войти</Link>
+              </Button>
+              <Button size="lg" variant="outline" className="px-8">
+                <Link href="auth/login">Регистрация</Link>
+              </Button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      <section className="w-full py-16 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-12">
+            Основные возможности
+          </h2>
+
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle>Управление клиентами</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p>
+                  Поддержка физических и юридических лиц с полной информацией о
+                  клиентах
+                </p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>ФИО, дата рождения, адрес для физлиц</li>
+                  <li>Наименование, руководитель, бухгалтер для юрлиц</li>
+                  <li>Автоматическое обновление статуса "должник"</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Типы банковских счетов</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p>
+                  Поддержка всех видов банковских счетов с соблюдением
+                  бизнес-правил
+                </p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Чековые счета (кредитные/дебитные)</li>
+                  <li>Сберегательные счета с начислением процентов</li>
+                  <li>Автоматическая генерация номеров счетов</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Финансовые операции</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                <p>
+                  Полный спектр финансовых операций с автоматическим расчетом
+                  комиссий
+                </p>
+                <ul className="list-disc pl-5 space-y-1">
+                  <li>Пополнение и снятие средств</li>
+                  <li>Межсчетовые переводы</li>
+                  <li>Автоматическое начисление процентов</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      <section className="w-full py-16 md:py-24 lg:py-32 bg-muted/40">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-12">
+            Ключевые показатели
+          </h2>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+            <Card>
+              <CardContent className="flex flex-col items-center pt-6">
+                <div className="text-4xl font-bold">150+</div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Активных клиентов
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="flex flex-col items-center pt-6">
+                <div className="text-4xl font-bold">200+</div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Банковских счетов
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="flex flex-col items-center pt-6">
+                <div className="text-4xl font-bold">98.5%</div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Удовлетворенность клиентов
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="flex flex-col items-center pt-6">
+                <div className="text-4xl font-bold">24/7</div>
+                <p className="text-sm text-muted-foreground mt-2">
+                  Доступ к системе
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+      <section className="w-full py-16 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-12">
+            Как это работает
+          </h2>
+
+          <div className="grid gap-8 md:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground mb-4">
+                  1
+                </div>
+                <CardTitle>Регистрация клиентов</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Простая регистрация клиентов с полной информацией о физических
+                  и юридических лицах
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground mb-4">
+                  2
+                </div>
+                <CardTitle>Управление счетами</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Создание, редактирование и закрытие чековых и сберегательных
+                  счетов
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-primary text-primary-foreground mb-4">
+                  3
+                </div>
+                <CardTitle>Финансовые операции</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">
+                  Выполнение операций с автоматическим расчетом комиссий и
+                  начислением процентов
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+      <section className="w-full py-16 md:py-24 lg:py-32 bg-muted/40">
+        <div className="container px-4 md:px-6">
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl text-center mb-12">
+            Возможности системы
+          </h2>
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Учет клиентов</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Полный учет физических и юридических лиц с детальной
+                  информацией и историей операций
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Управление счетами</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Создание, блокировка и закрытие счетов с соблюдением
+                  бизнес-правил
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Финансовые операции</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Пополнение, снятие, переводы с автоматическим расчетом
+                  комиссий
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Отчеты</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Генерация отчетов в формате Excel и Word с детализацией по
+                  клиентам
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Статистика</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Отслеживание статистики в реальном времени с возможностью
+                  экспорта
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Безопасность</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">
+                  Работа через авторизованные сеансы с ролью кассира
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="w-full py-16 md:py-24 lg:py-32">
+        <div className="container px-4 md:px-6">
+          <Card className="bg-primary text-primary-foreground">
+            <CardContent className="p-8 md:p-12">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div className="space-y-4 max-w-lg">
+                  <h2 className="text-3xl font-bold tracking-tight">
+                    Начните использовать систему уже сегодня
+                  </h2>
+                  <p className="text-primary-foreground/80">
+                    Эффективное управление банковскими счетами с современным
+                    интерфейсом и мощным функционалом
+                  </p>
+                </div>
+                <div className="flex gap-4">
+                  <Button
+                    size="lg"
+                    className="px-8 hover:scale-105 transition cursor-pointer hover:transition-300"
+                  >
+                    <Link href="/auth/login">Войти</Link>
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="secondary"
+                    className="px-8 hover:scale-105 hover:transition cursor-pointer hover:transition-300"
+                  >
+                    <Link href="auth/login">Регистрация</Link>
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      <footer className="w-full py-8 md:py-12 lg:py-16 border-t">
+        <div className="container px-4 md:px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-center md:text-left">
+              <p className="text-sm text-muted-foreground">
+                © {new Date().getFullYear()} Банковские счета. Все права
+                защищены.
+              </p>
+            </div>
+            <div className="flex gap-4">
+              <a
+                href="#"
+                className="text-sm text-muted-foreground hover:text-primary"
+              >
+                Документация
+              </a>
+              <a
+                href="#"
+                className="text-sm text-muted-foreground hover:text-primary"
+              >
+                Условия использования
+              </a>
+              <a
+                href="#"
+                className="text-sm text-muted-foreground hover:text-primary"
+              >
+                Поддержка
+              </a>
+            </div>
+          </div>
+        </div>
       </footer>
-    </div>
+    </main>
   );
 }
