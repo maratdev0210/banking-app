@@ -46,9 +46,25 @@ export default function Signup() {
     },
   });
 
-  const onSubmit = (values: z.infer<typeof formSchema>) => {
-    const result = createCashier(values);
-    console.log(result);
+  const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const response = await fetch("/api/cashiers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(values),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        alert(result.error);
+        return;
+      }
+
+      console.log("Кассир создан:", result);
+    } catch (error) {
+      console.error("Ошибка при регистрации кассира:", error);
+    }
   };
 
   return (
@@ -106,7 +122,7 @@ export default function Signup() {
                 ></FormField>
                 <div className="w-full flex justify-end">
                   <Button className="cursor-pointer" type="submit">
-                    Далее
+                    Зарегистрироваться
                   </Button>
                 </div>
               </form>
