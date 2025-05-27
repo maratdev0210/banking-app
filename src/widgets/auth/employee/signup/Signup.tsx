@@ -18,6 +18,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { createCashier } from "@/lib/signup";
 import { ICashierData, CASHIER_INFO } from "@/types/auth/cashier";
+import Link from "next/link";
 
 const formSchema = z.object({
   firstName: z.string().min(2, { message: "Введите Ваше имя!" }).max(50),
@@ -48,7 +49,7 @@ export default function Signup() {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      const response = await fetch("/api/cashiers", {
+      const response = await fetch("/api/cashiers/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
@@ -120,9 +121,12 @@ export default function Signup() {
                     </FormItem>
                   )}
                 ></FormField>
-                <div className="w-full flex justify-end">
+                <div className="w-full flex justify-end gap-4">
                   <Button className="cursor-pointer" type="submit">
                     Зарегистрироваться
+                  </Button>
+                  <Button className="cursor-pointer">
+                    <Link href="/employee/login">Войти в аккаунт</Link>
                   </Button>
                 </div>
               </form>
