@@ -1,59 +1,60 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { generateAccountNumber } from "@/lib/utils";
-import { z } from "zod";
+import { AccountType } from "@/app/generated/prisma";
+import { CheckType } from "@/app/generated/prisma";
+import { randomUUID } from "crypto";
 
-export async function POST(request: NextRequest) {
+function generateAccountNumber(type: AccountType) {
+  const prefix = type === "CHECK" ? "101" : "102";
+  const randomPart = Math.floor(100000 + Math.random() * 900000).toString();
+  return `${prefix}-${randomPart}`;
+}
+
+export async function POST(req: NextRequest) {
   try {
-    const data = await request.json();
+    const body = await req.json();
+    const { ownerId, accountType, checkType, creditLimit, openingDate } = body;
 
-    const accountSchema = z.object({
-      ownerId: z.number(),
-      accountType: z.enum(["CHECK", "SAVINGS"]),
-      checkType: z.enum(["DEBIT", "CREDIT"]).optional(),
-      creditLimit: z.number().optional().default(0),
-      openingDate: z.string().optional(),
-    });
+    if (!ownerId || !accountType || (accountType === "CHECK" && !checkType)) {
+      return NextResponse.json(
+        { success: false, message: "Неверные данные формы" },
+        { status: 400 }
+      );
+    }
 
-    const validatedData = accountSchema.parse(data);
+    const accountNumber = generateAccountNumber(accountType);
 
-    const accountNumber = await generateAccountNumber(
-      validatedData.accountType
-    );
-
-    const newAccount = await prisma.account.create({
+    const account = await prisma.account.create({
       data: {
+        clientId: ownerId,
         accountNumber,
+        openedAt: new Date(openingDate),
+        accountType,
         balance: 0,
-        clientId: validatedData.ownerId,
-        accountType: validatedData.accountType,
-        openedAt: validatedData.openingDate
-          ? new Date(validatedData.openingDate)
-          : new Date(),
       },
     });
 
-    if (validatedData.accountType === "CHECK" && validatedData.checkType) {
+    if (accountType === "CHECK") {
       await prisma.checkAccount.create({
         data: {
-          id: newAccount.id,
-          accountType: validatedData.checkType,
+          id: account.id,
+          accountType: checkType as CheckType,
         },
       });
-    } else if (validatedData.accountType === "SAVINGS") {
+    } else if (accountType === "SAVINGS") {
       await prisma.savingAccount.create({
         data: {
-          id: newAccount.id,
+          id: account.id,
         },
       });
     }
 
-    return Response.json({
-      id: newAccount.id,
-      message: "Счет успешно открыт",
-    });
+    return NextResponse.json({ success: true, id: account.id });
   } catch (error) {
-    console.error("Error creating account:", error);
-    return Response.json({ error: "Не удалось открыть счет" }, { status: 500 });
+    console.error("Ошибка при открытии счёта:", error);
+    return NextResponse.json(
+      { success: false, message: "Серверная ошибка" },
+      { status: 500 }
+    );
   }
 }
