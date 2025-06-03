@@ -59,9 +59,22 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const withClients = req.nextUrl.searchParams.get("withClients") === "true";
+
   const accounts = await prisma.account.findMany({
-    include: { checkAccount: true },
+    include: {
+      checkAccount: true,
+      client: withClients
+        ? {
+            include: {
+              physical: true,
+              legal: true,
+            },
+          }
+        : false,
+    },
   });
+
   return NextResponse.json(accounts);
 }
