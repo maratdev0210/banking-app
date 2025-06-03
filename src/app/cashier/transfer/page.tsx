@@ -47,6 +47,9 @@ export default function TransferPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [predictedFee, setPredictedFee] = useState<number | null>(null);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const pageSize = 5;
 
   useEffect(() => {
     fetch("/api/accounts?withClients=true")
@@ -81,13 +84,21 @@ export default function TransferPage() {
     }
   }, [selectedFrom, amount]);
 
+  const fetchTransactions = () => {
+    if (!fromId) return;
+    fetch(
+      `/api/accounts/${fromId}/transactions?page=${page}&pageSize=${pageSize}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setTransactions(data.transactions);
+        setTotal(data.total);
+      });
+  };
+
   useEffect(() => {
-    if (fromId) {
-      fetch(`/api/accounts/${fromId}/transactions`)
-        .then((res) => res.json())
-        .then(setTransactions);
-    }
-  }, [fromId]);
+    fetchTransactions();
+  }, [fromId, page]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,8 +122,10 @@ export default function TransferPage() {
       }),
     });
     const data = await res.json();
-    if (data.success) toast.success("Перевод успешно выполнен");
-    else toast.error(data.message || "Ошибка перевода");
+    if (data.success) {
+      toast.success("Перевод успешно выполнен");
+      fetchTransactions();
+    } else toast.error(data.message || "Ошибка перевода");
     setIsSubmitting(false);
   };
 
@@ -126,7 +139,12 @@ export default function TransferPage() {
               <CardTitle>Счёт отправителя</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Select onValueChange={setFromId}>
+              <Select
+                onValueChange={(val) => {
+                  setFromId(val);
+                  setPage(1);
+                }}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Выберите счёт" />
                 </SelectTrigger>
@@ -221,7 +239,7 @@ export default function TransferPage() {
       {transactions.length > 0 && (
         <Card>
           <CardHeader>
-            <CardTitle>Последние операции</CardTitle>
+            <CardTitle>История операций</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm">
             {transactions.map((tx) => (
@@ -241,6 +259,25 @@ export default function TransferPage() {
                 </div>
               </div>
             ))}
+            <div className="flex justify-between pt-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage((p) => Math.max(1, p - 1))}
+                disabled={page === 1}
+              >
+                Назад
+              </Button>
+              <span className="text-sm">Страница {page}</span>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setPage((p) => p + 1)}
+                disabled={page * pageSize >= total}
+              >
+                Вперёд
+              </Button>
+            </div>
           </CardContent>
         </Card>
       )}
