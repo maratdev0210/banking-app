@@ -58,3 +58,10 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET() {
+  const accounts = await prisma.account.findMany({
+    include: { checkAccount: true },
+  });
+  return NextResponse.json(accounts);
+}
