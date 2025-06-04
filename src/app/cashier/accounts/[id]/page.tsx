@@ -7,6 +7,14 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface AccountDetails {
   id: number;
@@ -37,6 +45,8 @@ export default function AccountDetailPage() {
   const [account, setAccount] = useState<AccountDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [amount, setAmount] = useState("");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     fetch(`/api/accounts/${id}`)
@@ -66,6 +76,30 @@ export default function AccountDetailPage() {
     setIsDeleting(false);
   };
 
+  const handleDeposit = async () => {
+    if (!amount || !account) return;
+    const value = parseFloat(amount);
+    if (isNaN(value) || value <= 0) {
+      toast.error("Введите корректную сумму");
+      return;
+    }
+    setIsProcessing(true);
+    const res = await fetch("/api/deposit", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ accountId: account.id, amount: value }),
+    });
+    const result = await res.json();
+    if (res.ok) {
+      toast.success("Пополнение выполнено");
+      setAccount({ ...account, balance: account.balance + value });
+      setAmount("");
+    } else {
+      toast.error(result.message || "Ошибка пополнения");
+    }
+    setIsProcessing(false);
+  };
+
   if (loading) return <Skeleton className="h-40 w-full mt-10" />;
   if (!account) return <p className="text-red-500 p-4">Счёт не найден</p>;
 
@@ -79,16 +113,41 @@ export default function AccountDetailPage() {
       <Card>
         <CardHeader className="flex flex-col md:flex-row justify-between md:items-center">
           <CardTitle className="text-xl">Детали счёта</CardTitle>
-          {account.balance === 0 && (
-            <Button
-              variant="destructive"
-              size="sm"
-              onClick={handleClose}
-              disabled={isDeleting}
-            >
-              {isDeleting ? "Закрытие..." : "Закрыть счёт"}
-            </Button>
-          )}
+          <div className="flex gap-2">
+            {account.balance === 0 && (
+              <Button
+                variant="destructive"
+                size="sm"
+                onClick={handleClose}
+                disabled={isDeleting}
+              >
+                {isDeleting ? "Закрытие..." : "Закрыть счёт"}
+              </Button>
+            )}
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button size="sm" variant="secondary">
+                  Пополнить
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Пополнение счёта</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <Input
+                    type="number"
+                    placeholder="Введите сумму"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                  />
+                  <Button onClick={handleDeposit} disabled={isProcessing}>
+                    {isProcessing ? "Обработка..." : "Подтвердить пополнение"}
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           <p>
