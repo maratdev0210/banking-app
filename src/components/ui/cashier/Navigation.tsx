@@ -8,6 +8,7 @@ const navLinks = [
   { href: "/cashier", label: "Главная" },
   { href: "/cashier/accounts", label: "Счета клиентов" },
   { href: "/cashier/transfer", label: "Переводы" },
+  { href: "/cashier/withdrawal", label: "Снятие денег" },
   { href: "/accounts/new", label: "Открытие счёта" },
   { href: "/cashier/session", label: "Сессия кассира" },
   { href: "/cashier/transactions", label: "Операции" },
