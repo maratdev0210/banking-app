@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface AccountDetails {
   id: number;
@@ -31,8 +33,10 @@ interface AccountDetails {
 
 export default function AccountDetailPage() {
   const { id } = useParams();
+  const router = useRouter();
   const [account, setAccount] = useState<AccountDetails | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetch(`/api/accounts/${id}`)
@@ -40,6 +44,27 @@ export default function AccountDetailPage() {
       .then(setAccount)
       .finally(() => setLoading(false));
   }, [id]);
+
+  const handleClose = async () => {
+    const confirmed = confirm(
+      "Вы уверены, что хотите закрыть счёт? Это действие необратимо."
+    );
+    if (!confirmed) return;
+
+    setIsDeleting(true);
+    const res = await fetch(`/api/accounts/${id}/close`, {
+      method: "DELETE",
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      toast.success("Счёт успешно закрыт");
+      router.push("/cashier/accounts");
+    } else {
+      toast.error(data.error || "Ошибка при закрытии счёта");
+    }
+    setIsDeleting(false);
+  };
 
   if (loading) return <Skeleton className="h-40 w-full mt-10" />;
   if (!account) return <p className="text-red-500 p-4">Счёт не найден</p>;
@@ -52,8 +77,18 @@ export default function AccountDetailPage() {
   return (
     <div className="max-w-3xl mx-auto p-6">
       <Card>
-        <CardHeader>
+        <CardHeader className="flex flex-col md:flex-row justify-between md:items-center">
           <CardTitle className="text-xl">Детали счёта</CardTitle>
+          {account.balance === 0 && (
+            <Button
+              variant="destructive"
+              size="sm"
+              onClick={handleClose}
+              disabled={isDeleting}
+            >
+              {isDeleting ? "Закрытие..." : "Закрыть счёт"}
+            </Button>
+          )}
         </CardHeader>
         <CardContent className="space-y-4">
           <p>
